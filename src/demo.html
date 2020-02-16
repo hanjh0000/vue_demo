@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuex"></script>
+</head>
+
+<body>
+    <div id="app">
+        {{message}}
+        <div id="ai" style="color: red;">
+
+        </div>
+        <demo s="^_^"></demo>
+        <mytable v-for="post in posts" :key="post.id" :post="post"></mytable>
+        <hr />
+        <div :style="{fontSize:size +'em'}">
+            <blog v-for="post in posts" :key="post.id" :post="post" @enlarge="enlarge"></blog>
+        </div>
+        <hr>
+        <warn>Don't be a foo</warn>
+        <hr>
+        <renderdemo></renderdemo>
+        <hr>
+        <p>{{count}}</p>
+        <button @click="increment">+</button><button @click="decrement">-</button>
+    </div>
+
+
+
+</body>
+<script>
+
+    Vue.component('demo', {
+        props: ['s'],
+        data: function () {
+            return {
+                count: 0
+            }
+        },
+        template: '<button @click="count ++">You clicked me for {{count}} times.{{s}}</button>'
+    })
+    Vue.component("mytable", {
+        props: ['post'],
+        template: '<table border=1><tr><th>ID</th><th>Title</th></tr><tr><td>{{post.id}}</td><td>{{post.title}}</td> </tr></table > ',
+    })
+    Vue.component('blog', {
+        props: ['post'],
+        template: `
+    <div class="blog-post">
+      <h3>{{ post.title }}</h3> 
+      <button @click="$emit('enlarge',0.1)">
+        Enlarge text
+      </button>
+      <div v-html="post.content"></div>
+    </div>
+  `,
+    })
+    Vue.component('warn', {
+        template: `<div><strong>WARNNING!</strong><slot></slot></div>`
+    })
+    Vue.component("renderdemo", {
+        render: function (createElement) {
+            return createElement(
+                "h1", "this.posts"
+            )
+        }
+    })
+
+    const store = new Vuex.Store({
+        state: {
+            count: 0
+        },
+        mutations: {
+            increment: state => state.count++,
+            decrement: state => state.count--
+        }
+    })
+
+
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            message: "hello vue!",
+            posts: [
+                { id: 1, title: 'My journey with Vue', content: "I am content 1" },
+                { id: 2, title: 'Blogging with Vue', content: "I am content 2" },
+                { id: 3, title: 'Why Vue is so fun', content: "I am content 3" }
+            ],
+            size: 1,
+            inputValue: '',
+        },
+        computed: {
+            count() {
+                return store.state.count
+            }
+        },
+        created: function () { console.log("a is " + this.message) },
+        methods: {
+            enlarge: function (enlargeAmount) {
+                return this.size += enlargeAmount
+            },
+            increment: function () {
+                store.commit('increment')
+            },
+            decrement: () => store.commit('decrement')
+        }
+    })
+</script>
+
+</html>
