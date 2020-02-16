@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>{{count}}</p>
-    <button @click="increment">You Have Click Buttons For {{count}} Times</button>
+    <button @click="increment">I'm Message,You Have Click Buttons For {{count}} Times</button>
   </div>
 </template>
 <script>
@@ -11,7 +11,7 @@ export default {
       return this.$store.state.count;
     }},
     methods: {
-        increment:()=>{this.$store.commit('increment')}
+        increment:function(){this.$store.commit('increment')}
     }
   };
 </script>
